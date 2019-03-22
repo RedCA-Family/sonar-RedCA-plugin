@@ -159,9 +159,15 @@ export default class ExcelExport extends React.PureComponent {
        const facetMode = 'count';
        const types = '';
        findIssueFacets(project, facets, facetMode, types, false).then((valuesReturnedByAPI) => {
-         projectInfo.codeSmells = valuesReturnedByAPI.values[0].values[0].count;
-         projectInfo.vulnerabilities = valuesReturnedByAPI.values[0].values[1].count;
-         projectInfo.bugs = valuesReturnedByAPI.values[0].values[2].count;
+         for (let i = 0; i < valuesReturnedByAPI.values[0].values.length; i += 1) {
+           if (valuesReturnedByAPI.values[0].values[i].val === "VULNERABILITY") {
+             projectInfo.vulnerabilities = valuesReturnedByAPI.values[0].values[i].count;
+           } else if (valuesReturnedByAPI.values[0].values[i].val === "BUG") {
+             projectInfo.bugs = valuesReturnedByAPI.values[0].values[i].count;
+           } else if (valuesReturnedByAPI.values[0].values[i].val === "CODE_SMELL") {
+             projectInfo.codeSmells = valuesReturnedByAPI.values[0].values[i].count;
+           }
+         }
          resolve(4);
        }).catch((err) => {
          reject(err);
